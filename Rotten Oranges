@@ -1,0 +1,60 @@
+class Solution {
+    public int orangesRotting(int[][] grid) {
+        //Base Case
+        if(grid == null || grid.length == 0){
+            return 0;
+        }
+
+        int rows = grid.length;
+        int cols = grid[0].length;
+        //Queue to store the position of rotten orange
+        Queue<int[]> queue = new LinkedList<>();
+        //variable to store the count of fresh orange
+        int fresh_count = 0;
+        for(int i = 0; i < rows; i++){
+            for(int j = 0; j < cols; j++){
+                if(grid[i][j] == 2){
+                    queue.offer(new int[]{i, j});
+                }
+                if(grid[i][j] != 0){
+                    fresh_count += 1;
+                }
+            }
+        }
+        //case 2
+        if(fresh_count == 0){
+            return 0;
+        }
+        int[] dx = {0, 0, 1, -1};
+        int[] dy = {1, -1, 0, 0};
+        int count = 0, min_count = 0;
+        //iterate the queue
+        while(!queue.isEmpty()){
+            int size = queue.size();
+            count += size;
+            for(int i = 0; i < size; i++){
+                int[] point = queue.remove();
+
+                for(int j = 0; j < 4; j++){
+                    int x = point[0] + dx[j];
+                    int y = point[1] + dy[j];
+
+                    //check valid case
+                    if(x < 0 || y < 0 || x >= rows || y >= cols || grid[x][y] == 0 || grid[x][y] == 2){
+                        continue;
+                    }
+
+                    //make the position rotten
+                    grid[x][y] = 2;
+                    queue.offer(new int[]{x, y});
+                }
+            }
+            if(queue.size() != 0){
+                min_count += 1;
+            }
+        }
+
+        return fresh_count == count ? min_count : -1;
+        
+    }
+}
